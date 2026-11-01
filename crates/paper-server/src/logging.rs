@@ -49,9 +49,7 @@ pub fn init(level: &str) -> Result<(), LoggingError> {
     let Ok(filter) = EnvFilter::try_new(level) else {
         return Err(LoggingError::BadFilter);
     };
-    let result = tracing_subscriber::fmt()
-        .with_env_filter(filter)
-        .try_init();
+    let result = tracing_subscriber::fmt().with_env_filter(filter).try_init();
     result.map_err(|_| LoggingError::AlreadyInitialized)
 }
 
