@@ -146,7 +146,9 @@ mod tests {
         assert_eq!(PingRequest::decode_body(&mut reader), Ok(ping));
         assert_eq!(reader.finish(), Ok(()));
 
-        let pong = PongResponse { payload: ping.payload };
+        let pong = PongResponse {
+            payload: ping.payload,
+        };
         let mut bytes = Vec::new();
         pong.encode(&mut bytes);
         let mut reader = Reader::new(&bytes);

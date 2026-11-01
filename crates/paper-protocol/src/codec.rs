@@ -164,14 +164,20 @@ mod tests {
     #[test]
     fn rejects_bad_bool_and_truncated_input() {
         let mut reader = Reader::new(&[2]);
-        assert_eq!(reader.read_bool(), Err(DecodeError::InvalidValue("bool", 2)));
+        assert_eq!(
+            reader.read_bool(),
+            Err(DecodeError::InvalidValue("bool", 2))
+        );
         let mut reader = Reader::new(&[1, 2, 3]);
         assert_eq!(reader.read_i64(), Err(DecodeError::UnexpectedEof));
     }
 
     #[test]
     fn reports_trailing_bytes() {
-        assert_eq!(Reader::new(&[1, 2]).finish(), Err(DecodeError::TrailingBytes(2)));
+        assert_eq!(
+            Reader::new(&[1, 2]).finish(),
+            Err(DecodeError::TrailingBytes(2))
+        );
     }
 
     #[test]
@@ -190,7 +196,10 @@ mod tests {
         let mut reader = Reader::new(&[2, 0xff, 0xfe]);
         assert_eq!(reader.read_string(8), Err(DecodeError::InvalidUtf8));
         let negative = [0xff, 0xff, 0xff, 0xff, 0x0f];
-        assert_eq!(Reader::new(&negative).read_string(8), Err(DecodeError::InvalidLength(-1)));
+        assert_eq!(
+            Reader::new(&negative).read_string(8),
+            Err(DecodeError::InvalidLength(-1))
+        );
         let mut reader = Reader::new(&[5, b'a', b'b']);
         assert_eq!(reader.read_string(8), Err(DecodeError::UnexpectedEof));
     }
