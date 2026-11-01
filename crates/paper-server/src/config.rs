@@ -131,7 +131,7 @@ mod tests {
     #[test]
     fn defaults_are_valid_and_secure() {
         let config = Config::default();
-        assert_eq!(config.validate().is_ok(), true);
+        assert!(config.validate().is_ok());
         assert!(config.online_mode);
     }
 
