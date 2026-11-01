@@ -185,9 +185,15 @@ mod tests {
         let mut out = Vec::new();
         write_string(&mut out, "héllo", 5).unwrap();
         assert_eq!(Reader::new(&out).read_string(5), Ok("héllo".to_owned()));
-        assert_eq!(Reader::new(&out).read_string(4), Err(DecodeError::StringTooLong(4)));
+        assert_eq!(
+            Reader::new(&out).read_string(4),
+            Err(DecodeError::StringTooLong(4))
+        );
         let mut sink = Vec::new();
-        assert_eq!(write_string(&mut sink, "héllo", 4), Err(EncodeError::StringTooLong(4)));
+        assert_eq!(
+            write_string(&mut sink, "héllo", 4),
+            Err(EncodeError::StringTooLong(4))
+        );
         assert!(sink.is_empty());
     }
 
