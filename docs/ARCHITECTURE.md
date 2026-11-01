@@ -19,7 +19,8 @@ This document describes the intended architecture, not completed functionality. 
 - **tick runtime** — fixed-step scheduling, task queues, timing metrics, and graceful overload behavior.
 - **world** — chunks, block state, entities, players, and deterministic game-rule logic.
 - **storage** — world format, chunk loading/saving, crash safety, and background I/O.
-- **extensions** — a future stable, versioned API; plugin isolation and compatibility are open design questions.
+- **paper-jvm and the Java API shim (`api/`)** — an embedded JVM and a Bukkit/Paper API compatibility layer for running existing Paper plugins, as proposed in [ADR 0002](adr/0002-jvm-bridge.md). Plugin isolation and API coverage are open questions.
+- **extensions** — a possible Rust-native extension API alongside plugin compatibility.
 - **observability** — structured logs, health status, profiling hooks, and server metrics.
 
 Only the protocol and server crates exist as early scaffolding today.
@@ -40,3 +41,11 @@ Start with a simple, correct tick loop and asynchronous socket I/O. Keep authori
 ## Performance methodology
 
 Every optimization should include a reproducible workload and report hardware, operating system, Rust version, game version, player/entity counts, and measurement methodology. Compare equivalent workloads and publish both throughput and latency/tick-time distributions. No performance claims are made until results can be reproduced.
+
+## Decision records
+
+Significant decisions are recorded in `docs/adr/`:
+
+- [ADR 0001](adr/0001-license-and-mojang-code-boundary.md): GPL-3.0 license and the Mojang-code boundary.
+- [ADR 0002](adr/0002-jvm-bridge.md): JVM bridge for Paper plugin compatibility (proposed).
+- [ADR 0003](adr/0003-target-minecraft-version.md): target Minecraft version (draft).
