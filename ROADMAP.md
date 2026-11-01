@@ -5,7 +5,7 @@ This roadmap is directional. Items are not complete unless reflected in code, te
 ## M0 — Repository and engineering foundations
 - [x] Create Rust workspace and crate boundaries.
 - [x] Document goals, constraints, and proposed architecture.
-- [ ] Add CI for formatting, linting, and tests.
+- [x] Add CI for formatting, linting, and tests.
 - [ ] Establish issue labels and design decision records.
 
 ## M1 — Protocol research and vertical slice
@@ -46,6 +46,14 @@ This roadmap is directional. Items are not complete unless reflected in code, te
 - [ ] Publish compatibility and security boundaries.
 - [ ] Benchmark against clearly described reference workloads.
 - [ ] Optimize demonstrated bottlenecks without sacrificing correctness.
+
+## M7 — JVM bridge and Bukkit/Paper API compatibility
+- [ ] Embed a JVM from Rust and smoke-test startup (`paper-jvm`).
+- [ ] Load plugin JARs from `plugins/` with `plugin.yml` parsing and isolated class loaders.
+- [ ] Implement plugin lifecycle (load, enable, disable) with error isolation.
+- [ ] Implement the Bukkit/Paper API shim in Java, backed by Rust calls (core interfaces, events, commands, permissions, scheduler).
+- [ ] Build a reference-plugin test harness and a conformance matrix of supported API calls.
+- [ ] Document supported plugins, API coverage, and known gaps.
 
 ## Definition of done
 
