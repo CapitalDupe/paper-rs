@@ -7,7 +7,9 @@ Thanks for your interest in paper-rs. The project is early-stage, so design feed
 - Check existing issues and open pull requests.
 - For a substantial feature or architecture change, open an issue to discuss the approach first.
 - Keep pull requests focused and explain the motivation and trade-offs.
-- Do not submit code copied from other projects unless its license and provenance have been reviewed and documented.
+- Contributions are licensed under GPL-3.0-only.
+- Do not submit code copied from other projects unless its license is GPL-3.0-compatible and its provenance (source, commit, license) is documented in the pull request.
+- Never submit Mojang's proprietary server code, decompiled or deobfuscated Minecraft sources, or Paper patches derived from them. Reimplement Mojang-derived behavior from protocol documentation, observed behavior, and tests. See `docs/adr/0001-license-and-mojang-code-boundary.md`.
 
 ## Development setup
 
