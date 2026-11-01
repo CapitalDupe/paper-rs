@@ -7,6 +7,9 @@ repository.workspace = true
 description = "Protocol primitives for the independent paper-rs server"
 
 [dependencies]
+aes = "0.8"
+cfb8 = "0.8"
+flate2 = "1"
 
 [lints]
 workspace = true
