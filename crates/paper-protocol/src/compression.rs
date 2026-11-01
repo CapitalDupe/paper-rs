@@ -131,15 +131,24 @@ mod tests {
     fn rejects_bad_data_lengths() {
         let mut payload = Vec::new();
         varint::write_varint(2_097_152, &mut payload);
-        assert_eq!(decompress(&payload, 256), Err(CompressionError::TooLarge(2_097_152)));
+        assert_eq!(
+            decompress(&payload, 256),
+            Err(CompressionError::TooLarge(2_097_152))
+        );
 
         let mut payload = Vec::new();
         varint::write_varint(-1, &mut payload);
-        assert_eq!(decompress(&payload, 256), Err(CompressionError::NegativeDataLength));
+        assert_eq!(
+            decompress(&payload, 256),
+            Err(CompressionError::NegativeDataLength)
+        );
 
         let mut payload = Vec::new();
         varint::write_varint(10, &mut payload);
-        assert_eq!(decompress(&payload, 256), Err(CompressionError::BelowThreshold(10, 256)));
+        assert_eq!(
+            decompress(&payload, 256),
+            Err(CompressionError::BelowThreshold(10, 256))
+        );
 
         let result = decompress(&[0x80; 5], 256);
         let expected = CompressionError::BadDataLength(varint::VarIntError::TooLong);
@@ -152,7 +161,10 @@ mod tests {
         let mut tampered = Vec::new();
         varint::write_varint(301, &mut tampered);
         tampered.extend_from_slice(&packed[2..]);
-        assert_eq!(decompress(&tampered, 256), Err(CompressionError::SizeMismatch));
+        assert_eq!(
+            decompress(&tampered, 256),
+            Err(CompressionError::SizeMismatch)
+        );
     }
 
     #[test]
