@@ -173,9 +173,27 @@ mod tests {
     #[test]
     fn first_tick_is_due_immediately_then_every_step() {
         let mut clock = TickClock::new(STEP, 10);
-        assert_eq!(clock.due(ms(0)), Due { ticks: 1, skipped: 0 });
-        assert_eq!(clock.due(ms(49)), Due { ticks: 0, skipped: 0 });
-        assert_eq!(clock.due(ms(50)), Due { ticks: 1, skipped: 0 });
+        assert_eq!(
+            clock.due(ms(0)),
+            Due {
+                ticks: 1,
+                skipped: 0
+            }
+        );
+        assert_eq!(
+            clock.due(ms(49)),
+            Due {
+                ticks: 0,
+                skipped: 0
+            }
+        );
+        assert_eq!(
+            clock.due(ms(50)),
+            Due {
+                ticks: 1,
+                skipped: 0
+            }
+        );
         assert_eq!(clock.next_due(), ms(100));
     }
 
@@ -183,7 +201,13 @@ mod tests {
     fn runs_catch_up_ticks_when_slightly_behind() {
         let mut clock = TickClock::new(STEP, 10);
         clock.due(ms(0));
-        assert_eq!(clock.due(ms(200)), Due { ticks: 4, skipped: 0 });
+        assert_eq!(
+            clock.due(ms(200)),
+            Due {
+                ticks: 4,
+                skipped: 0
+            }
+        );
     }
 
     #[test]
@@ -191,7 +215,13 @@ mod tests {
         let mut clock = TickClock::new(STEP, 10);
         clock.due(ms(0));
         let due = clock.due(ms(10_000));
-        assert_eq!(due, Due { ticks: 10, skipped: 190 });
+        assert_eq!(
+            due,
+            Due {
+                ticks: 10,
+                skipped: 190
+            }
+        );
         assert_eq!(clock.next_due(), ms(10_050));
     }
 
