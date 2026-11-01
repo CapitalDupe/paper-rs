@@ -11,14 +11,15 @@ PaperMC demonstrates how much a server can improve through performance engineeri
 - Build a Minecraft: Java Edition dedicated server in Rust.
 - Prioritize correctness and protocol compatibility before optimizations.
 - Design for low-latency ticking and efficient networking.
+- Run existing Paper plugins unmodified, through an embedded JVM and a Bukkit/Paper API compatibility layer (long-term goal; see ROADMAP M7).
 - Provide robust configuration, logging, metrics, and graceful shutdown.
 - Explore a documented extension API after core server behavior stabilizes.
 - Develop in small, testable milestones with reproducible benchmarks.
 
 ## Non-goals (for now)
 
-- Claiming drop-in compatibility with Paper, Bukkit, or Spigot plugins.
-- Reusing PaperMC implementation code without an explicit, compatible license basis.
+- Claiming drop-in compatibility with Paper, Bukkit, or Spigot plugins before it is demonstrated by tests.
+- Copying Mojang's proprietary server code, decompiled or deobfuscated Minecraft sources, or Paper patches that modify them. Paper's own original code may be followed or reused under GPL-3.0 with provenance recorded (see ADR 0001).
 - Promising production readiness or a specific performance advantage before benchmarks exist.
 - Implementing every Minecraft version at once.
 
@@ -65,8 +66,8 @@ Issues, design discussions, tests, benchmarks, and documentation are welcome. Pl
 
 ## Project name and relationship to PaperMC
 
-This is an independent project inspired by the server software ecosystem and goals associated with PaperMC. It is **not affiliated with, endorsed by, or a continuation of PaperMC**. Minecraft is a trademark of Microsoft/Mojang; PaperMC is a separate project. This repository does not imply compatibility with Paper plugins.
+This is an independent project inspired by the server software ecosystem and goals associated with PaperMC. It is **not affiliated with, endorsed by, or a continuation of PaperMC**. Minecraft is a trademark of Microsoft/Mojang; PaperMC is a separate project. Paper plugin compatibility is a project goal, but this repository does not claim it until it is demonstrated by tests.
 
 ## License
 
-Licensed under the MIT License; see [LICENSE](LICENSE). Any third-party protocol specifications, assets, or dependencies remain subject to their respective terms.
+Licensed under the GNU General Public License v3.0 only (GPL-3.0-only); see [LICENSE](LICENSE). Any third-party protocol specifications, assets, or dependencies remain subject to their respective terms.
