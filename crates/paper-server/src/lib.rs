@@ -3,3 +3,4 @@
 //! Networking, the tick loop, and the world arrive in later milestones.
 
 pub mod config;
+pub mod logging;

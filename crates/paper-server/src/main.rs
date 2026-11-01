@@ -7,6 +7,7 @@ use std::path::Path;
 use std::process::ExitCode;
 
 use paper_server::config::Config;
+use paper_server::logging;
 
 fn main() -> ExitCode {
     let path = std::env::args()
@@ -19,9 +20,13 @@ fn main() -> ExitCode {
             return ExitCode::FAILURE;
         }
     };
-    println!("paper-rs: server scaffold (not yet playable)");
-    println!("protocol layer: {}", paper_protocol::STATUS);
-    println!("bind address: {}:{}", config.bind_address, config.port);
-    println!("online mode: {}", config.online_mode);
+    if let Err(err) = logging::init(&config.log_level) {
+        eprintln!("paper-rs: cannot start logging: {err}");
+        return ExitCode::FAILURE;
+    }
+    tracing::info!("paper-rs: server scaffold (not yet playable)");
+    tracing::info!("protocol layer: {}", paper_protocol::STATUS);
+    tracing::info!("bind address: {}:{}", config.bind_address, config.port);
+    tracing::info!("online mode: {}", config.online_mode);
     ExitCode::SUCCESS
 }
