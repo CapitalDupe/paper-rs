@@ -1,0 +1,11 @@
+# Example paper-rs configuration. Copy to server.toml and edit.
+# Every key is optional; omitted keys use the defaults shown here.
+# Unknown keys are rejected so typos are caught early.
+
+bind_address = "0.0.0.0"
+port = 25565
+max_players = 20
+motd = "A paper-rs server"
+online_mode = true            # keep true unless you know why you need otherwise
+compression_threshold = 256   # -1 disables compression
+view_distance = 10            # 2 to 32
