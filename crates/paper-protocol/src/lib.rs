@@ -1,7 +1,9 @@
 //! Minecraft Java protocol primitives for paper-rs.
 //!
-//! This crate will eventually own packet framing, protocol-version mappings,
-//! codecs, and protocol-level tests. No wire protocol is implemented yet.
+//! Modules are added incrementally; see `ROADMAP.md`. Nothing here opens
+//! sockets: the server crate drives these primitives.
+
+pub mod varint;
 
 /// Current implementation status of the protocol layer.
 pub const STATUS: &str = "scaffold";
