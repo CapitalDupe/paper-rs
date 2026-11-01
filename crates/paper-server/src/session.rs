@@ -258,7 +258,8 @@ pub async fn run_connection(mut conn: Connection, limits: NetLimits, info: Serve
         let read = if session.state() == State::Play {
             conn.read_frame(limits.max_frame_len).await
         } else {
-            conn.read_frame_until(PRE_LOGIN_MAX_FRAME_LEN, deadline).await
+            conn.read_frame_until(PRE_LOGIN_MAX_FRAME_LEN, deadline)
+                .await
         };
         let payload = match read {
             Ok(payload) => payload,
@@ -472,7 +473,10 @@ mod tests {
         let (id, mut reader) = open(&reply);
         assert_eq!(id, PongResponse::ID);
         assert_eq!(PongResponse::decode_body(&mut reader).unwrap().payload, 7);
-        assert!(matches!(client.read_frame(1024).await, Err(NetError::Closed)));
+        assert!(matches!(
+            client.read_frame(1024).await,
+            Err(NetError::Closed)
+        ));
     }
 
     #[tokio::test]
