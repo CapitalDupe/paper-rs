@@ -1,0 +1,12 @@
+[package]
+name = "paper-protocol"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Protocol primitives for the independent paper-rs server"
+
+[dependencies]
+
+[lints]
+workspace = true
