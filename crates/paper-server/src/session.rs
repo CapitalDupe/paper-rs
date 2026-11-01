@@ -397,11 +397,17 @@ mod tests {
 
     #[test]
     fn invalid_names_are_refused() {
-        for name in ["bad name", "x", "toolongplayername1", "a-b"] {
+        let cases = [
+            ("bad name", true),
+            ("x", false),
+            ("a-b", true),
+            ("", true),
+            ("Steve_01", false),
+        ];
+        for (name, refused) in cases {
             let mut session = Session::new(info(false));
             session.handle_packet(&handshake(NextState::Login)).unwrap();
             let outcome = session.handle_packet(&login_start(name)).unwrap();
-            let refused = name.len() > 16 || name.contains(' ') || name.contains('-');
             assert_eq!(outcome.close, refused, "name {name:?}");
         }
     }
