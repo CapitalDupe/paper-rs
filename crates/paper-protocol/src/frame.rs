@@ -129,7 +129,10 @@ mod tests {
     #[test]
     fn rejects_malformed_lengths() {
         let negative = [0xff, 0xff, 0xff, 0xff, 0x0f];
-        assert_eq!(decode_frame(&negative, 1024), Err(FrameError::NegativeLength));
+        assert_eq!(
+            decode_frame(&negative, 1024),
+            Err(FrameError::NegativeLength)
+        );
         assert_eq!(decode_frame(&[0x00], 1024), Err(FrameError::Empty));
         let overlong = [0x80; 5];
         let expected = FrameError::BadLength(varint::VarIntError::TooLong);
