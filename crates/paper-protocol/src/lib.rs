@@ -4,6 +4,8 @@
 //! sockets: the server crate drives these primitives.
 
 pub mod codec;
+pub mod compression;
+pub mod encryption;
 pub mod error;
 pub mod frame;
 pub mod handshake;
