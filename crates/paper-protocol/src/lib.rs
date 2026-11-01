@@ -7,6 +7,7 @@ pub mod codec;
 pub mod error;
 pub mod frame;
 pub mod handshake;
+pub mod login;
 pub mod status;
 pub mod varint;
 
