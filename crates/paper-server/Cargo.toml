@@ -1,0 +1,13 @@
+[package]
+name = "paper-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Rust-native Minecraft Java server prototype"
+
+[dependencies]
+paper-protocol = { path = "../paper-protocol" }
+
+[lints]
+workspace = true
