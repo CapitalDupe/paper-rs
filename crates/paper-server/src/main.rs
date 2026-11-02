@@ -20,7 +20,10 @@ async fn main() -> ExitCode {
     let config = match Config::load(Path::new(&path)) {
         Ok(config) => config,
         Err(err) => {
-            eprintln!("{}: invalid configuration: {err}", paper_server::SERVER_NAME);
+            eprintln!(
+                "{}: invalid configuration: {err}",
+                paper_server::SERVER_NAME
+            );
             return ExitCode::FAILURE;
         }
     };

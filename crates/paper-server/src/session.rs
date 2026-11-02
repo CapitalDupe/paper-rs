@@ -481,12 +481,7 @@ mod tests {
         let conn_shutdown = rx.clone();
         let server_info = info(false);
         tokio::spawn(serve(listener, limits, rx, move |conn, limits| {
-            run_connection(
-                conn,
-                limits,
-                server_info.clone(),
-                conn_shutdown.clone(),
-            )
+            run_connection(conn, limits, server_info.clone(), conn_shutdown.clone())
         }));
         (addr, tx)
     }
