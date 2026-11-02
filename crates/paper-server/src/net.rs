@@ -31,6 +31,8 @@ pub struct NetLimits {
     pub max_frame_len: usize,
     /// Maximum simultaneous connections.
     pub max_connections: usize,
+    /// How long to wait for open connections to finish once shutdown begins.
+    pub shutdown_grace: Duration,
 }
 
 impl Default for NetLimits {
@@ -39,6 +41,7 @@ impl Default for NetLimits {
             login_timeout: Duration::from_secs(10),
             max_frame_len: frame::MAX_FRAME_LEN,
             max_connections: 1024,
+            shutdown_grace: Duration::from_secs(5),
         }
     }
 }
@@ -145,7 +148,9 @@ impl Connection {
 
 /// Accepts connections until `shutdown` becomes true, handing each to `handler`.
 ///
-/// Connections beyond `limits.max_connections` are dropped immediately.
+/// Connections beyond `limits.max_connections` are dropped immediately. After
+/// shutdown begins, waits up to `limits.shutdown_grace` for open connections to
+/// finish before returning.
 pub async fn serve<H, F>(
     listener: TcpListener,
     limits: NetLimits,
@@ -186,6 +191,16 @@ pub async fn serve<H, F>(
             let _permit = permit;
             handler(Connection::new(stream), task_limits).await;
         });
+    }
+    let Ok(total) = u32::try_from(limits.max_connections) else {
+        return;
+    };
+    let drain = permits.acquire_many_owned(total);
+    if tokio::time::timeout(limits.shutdown_grace, drain)
+        .await
+        .is_err()
+    {
+        tracing::warn!("connections still open after the shutdown grace period");
     }
 }
 
