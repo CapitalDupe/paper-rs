@@ -38,10 +38,7 @@ impl BlockPos {
 
     /// The chunk containing this position (rounds toward negative infinity).
     pub fn chunk_pos(self) -> ChunkPos {
-        ChunkPos::new(
-            self.x.div_euclid(CHUNK_SIZE),
-            self.z.div_euclid(CHUNK_SIZE),
-        )
+        ChunkPos::new(self.x.div_euclid(CHUNK_SIZE), self.z.div_euclid(CHUNK_SIZE))
     }
 
     /// The x and z offset inside the containing chunk, each in `0..16`.

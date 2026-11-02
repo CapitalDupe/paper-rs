@@ -144,7 +144,10 @@ impl Chunk {
         }
         let section = (relative / 16) as usize;
         let local_y = (relative % 16) as usize;
-        Some((section, (local_y * 16 + usize::from(z)) * 16 + usize::from(x)))
+        Some((
+            section,
+            (local_y * 16 + usize::from(z)) * 16 + usize::from(x),
+        ))
     }
 
     /// Reads a block by chunk-local `x`/`z` (0..16) and world `y`.
