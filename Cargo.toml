@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "crates/paper-protocol",
     "crates/paper-server",
+    "crates/paper-world",
 ]
 
 [workspace.package]

@@ -1,0 +1,10 @@
+[package]
+name = "paper-world"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "World data model (blocks, chunks, entities) for the Magna MC server prototype"
+
+[lints]
+workspace = true
