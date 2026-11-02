@@ -19,6 +19,7 @@ use paper_protocol::error::{DecodeError, EncodeError};
 use paper_protocol::handshake::{Handshake, NextState};
 use paper_protocol::login::{LoginDisconnect, LoginStart, LoginSuccess};
 use paper_protocol::status::{PingRequest, PongResponse, StatusRequest, StatusResponse};
+use tokio::sync::watch;
 use tokio::time::Instant;
 
 use crate::config::Config;
@@ -63,7 +64,7 @@ impl ServerInfo {
             motd: config.motd.clone(),
             max_players: config.max_players,
             online_players: 0,
-            version_name: "paper-rs (unreleased)".to_owned(),
+            version_name: format!("{} (unreleased)", crate::SERVER_NAME),
             protocol_version: -1,
             online_mode: config.online_mode,
         }
@@ -245,21 +246,35 @@ impl Session {
     }
 }
 
-/// Drives a session over `conn` until it closes, errors, or times out.
+/// Drives a session over `conn` until it closes, errors, times out, or
+/// `shutdown` becomes true (the connection is then closed cleanly).
 ///
 /// Until login completes, the whole exchange must finish within
 /// `limits.login_timeout`, and frames are capped at
 /// [`PRE_LOGIN_MAX_FRAME_LEN`].
-pub async fn run_connection(mut conn: Connection, limits: NetLimits, info: ServerInfo) {
+pub async fn run_connection(
+    mut conn: Connection,
+    limits: NetLimits,
+    info: ServerInfo,
+    mut shutdown: watch::Receiver<bool>,
+) {
     let peer = conn.peer_addr();
     let deadline = Instant::now() + limits.login_timeout;
     let mut session = Session::new(info);
     'conn: loop {
-        let read = if session.state() == State::Play {
-            conn.read_frame(limits.max_frame_len).await
-        } else {
-            conn.read_frame_until(PRE_LOGIN_MAX_FRAME_LEN, deadline)
-                .await
+        if *shutdown.borrow() {
+            break;
+        }
+        let playing = session.state() == State::Play;
+        let read = tokio::select! {
+            result = async {
+                if playing {
+                    conn.read_frame(limits.max_frame_len).await
+                } else {
+                    conn.read_frame_until(PRE_LOGIN_MAX_FRAME_LEN, deadline).await
+                }
+            } => result,
+            _ = shutdown.changed() => break,
         };
         let payload = match read {
             Ok(payload) => payload,
@@ -338,6 +353,12 @@ mod tests {
         let mut reader = Reader::new(bytes);
         let id = reader.read_varint().unwrap();
         (id, reader)
+    }
+
+    #[test]
+    fn from_config_brands_the_server() {
+        let info = ServerInfo::from_config(&Config::default());
+        assert!(info.version_name.starts_with(crate::SERVER_NAME));
     }
 
     #[test]
@@ -457,9 +478,10 @@ mod tests {
             ..NetLimits::default()
         };
         let (tx, rx) = watch::channel(false);
+        let conn_shutdown = rx.clone();
         let server_info = info(false);
         tokio::spawn(serve(listener, limits, rx, move |conn, limits| {
-            run_connection(conn, limits, server_info.clone())
+            run_connection(conn, limits, server_info.clone(), conn_shutdown.clone())
         }));
         (addr, tx)
     }
