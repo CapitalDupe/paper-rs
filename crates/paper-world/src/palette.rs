@@ -150,10 +150,9 @@ impl PalettedContainer {
         };
         let mut used = vec![false; palette.len()];
         for index in 0..SECTION_VOLUME {
-            if let Some(slot) = indices.get(index) {
-                if let Some(flag) = used.get_mut(slot as usize) {
-                    *flag = true;
-                }
+            let slot = indices.get(index).unwrap_or(0) as usize;
+            if let Some(flag) = used.get_mut(slot) {
+                *flag = true;
             }
         }
         let mut remap = vec![0_u32; palette.len()];
