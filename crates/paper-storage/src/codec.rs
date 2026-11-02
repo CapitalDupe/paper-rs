@@ -112,10 +112,10 @@ fn read_section(cursor: &mut Cursor<'_>) -> Result<PalettedContainer, StorageErr
         return Err(StorageError::Corrupt("bad palette size"));
     }
     let raw = cursor.take(palette_len * 4)?;
-    let palette = raw
-        .chunks_exact(4)
-        .filter_map(|bytes| <[u8; 4]>::try_from(bytes).ok())
-        .map(|bytes| BlockStateId(u32::from_be_bytes(bytes)))
+    let (entries, _) = raw.as_chunks::<4>();
+    let palette = entries
+        .iter()
+        .map(|bytes| BlockStateId(u32::from_be_bytes(*bytes)))
         .collect::<Vec<_>>();
     let bits = cursor.u8()?;
     let word_count = cursor.u32()? as usize;
@@ -123,10 +123,10 @@ fn read_section(cursor: &mut Cursor<'_>) -> Result<PalettedContainer, StorageErr
         return Err(StorageError::Corrupt("too many packed words"));
     }
     let raw = cursor.take(word_count * 8)?;
-    let words = raw
-        .chunks_exact(8)
-        .filter_map(|bytes| <[u8; 8]>::try_from(bytes).ok())
-        .map(u64::from_be_bytes)
+    let (entries, _) = raw.as_chunks::<8>();
+    let words = entries
+        .iter()
+        .map(|bytes| u64::from_be_bytes(*bytes))
         .collect::<Vec<_>>();
     PalettedContainer::from_parts(palette, bits, words)
         .map_err(|_| StorageError::Corrupt("invalid section data"))
