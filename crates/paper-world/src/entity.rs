@@ -121,7 +121,10 @@ mod tests {
     #[test]
     fn pitch_is_clamped_and_non_finite_angles_are_rejected() {
         assert_eq!(Rotation::new(0.0, 120.0).normalized().unwrap().pitch, 90.0);
-        assert_eq!(Rotation::new(0.0, -120.0).normalized().unwrap().pitch, -90.0);
+        assert_eq!(
+            Rotation::new(0.0, -120.0).normalized().unwrap().pitch,
+            -90.0
+        );
         assert_eq!(Rotation::new(f32::NAN, 0.0).normalized(), None);
         assert_eq!(Rotation::new(0.0, f32::INFINITY).normalized(), None);
     }

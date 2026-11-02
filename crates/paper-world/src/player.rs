@@ -195,7 +195,14 @@ mod tests {
     fn player() -> Player {
         let limits = MovementLimits::default();
         let spawn = Vec3::new(0.0, 64.0, 0.0);
-        Player::new(EntityId(1), Uuid([1; 16]), "Steve".to_owned(), spawn, &limits).unwrap()
+        Player::new(
+            EntityId(1),
+            Uuid([1; 16]),
+            "Steve".to_owned(),
+            spawn,
+            &limits,
+        )
+        .unwrap()
     }
 
     #[test]
@@ -225,7 +232,12 @@ mod tests {
         let mut player = player();
         let limits = MovementLimits::default();
         let before = player.clone();
-        let result = player.move_to(Vec3::new(500.0, 64.0, 0.0), Rotation::default(), false, &limits);
+        let result = player.move_to(
+            Vec3::new(500.0, 64.0, 0.0),
+            Rotation::default(),
+            false,
+            &limits,
+        );
         assert_eq!(result, Err(MoveError::TooFar));
         assert_eq!(player, before);
     }
@@ -256,7 +268,9 @@ mod tests {
         let mut player = player();
         let limits = MovementLimits::default();
         let target = Vec3::new(10_000.0, 80.0, 10_000.0);
-        player.teleport(target, Rotation::new(90.0, 0.0), &limits).unwrap();
+        player
+            .teleport(target, Rotation::new(90.0, 0.0), &limits)
+            .unwrap();
         assert_eq!(player.position(), target);
         assert!(!player.on_ground());
     }

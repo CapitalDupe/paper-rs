@@ -129,7 +129,10 @@ impl PlayerManager {
         on_ground: bool,
         limits: &MovementLimits,
     ) -> Result<(), PlayerMoveError> {
-        let player = self.players.get_mut(&id).ok_or(PlayerMoveError::NoSuchPlayer)?;
+        let player = self
+            .players
+            .get_mut(&id)
+            .ok_or(PlayerMoveError::NoSuchPlayer)?;
         player
             .move_to(target, rotation, on_ground, limits)
             .map_err(PlayerMoveError::Move)
@@ -148,8 +151,12 @@ mod tests {
     fn join_assigns_unique_ids_and_tracks_players() {
         let limits = MovementLimits::default();
         let mut players = PlayerManager::new();
-        let a = players.join(Uuid([1; 16]), "A".to_owned(), spawn(), &limits).unwrap();
-        let b = players.join(Uuid([2; 16]), "B".to_owned(), spawn(), &limits).unwrap();
+        let a = players
+            .join(Uuid([1; 16]), "A".to_owned(), spawn(), &limits)
+            .unwrap();
+        let b = players
+            .join(Uuid([2; 16]), "B".to_owned(), spawn(), &limits)
+            .unwrap();
         assert_ne!(a, b);
         assert_eq!(players.len(), 2);
         assert_eq!(players.get(a).unwrap().name(), "A");
@@ -161,7 +168,9 @@ mod tests {
     fn duplicate_uuids_are_rejected() {
         let limits = MovementLimits::default();
         let mut players = PlayerManager::new();
-        players.join(Uuid([1; 16]), "A".to_owned(), spawn(), &limits).unwrap();
+        players
+            .join(Uuid([1; 16]), "A".to_owned(), spawn(), &limits)
+            .unwrap();
         let result = players.join(Uuid([1; 16]), "A2".to_owned(), spawn(), &limits);
         assert_eq!(result, Err(JoinError::DuplicateUuid));
         assert_eq!(players.len(), 1);
@@ -171,11 +180,15 @@ mod tests {
     fn leaving_frees_the_uuid_but_never_reuses_the_id() {
         let limits = MovementLimits::default();
         let mut players = PlayerManager::new();
-        let first = players.join(Uuid([1; 16]), "A".to_owned(), spawn(), &limits).unwrap();
+        let first = players
+            .join(Uuid([1; 16]), "A".to_owned(), spawn(), &limits)
+            .unwrap();
         assert_eq!(players.leave(first).unwrap().name(), "A");
         assert!(players.is_empty());
         assert_eq!(players.leave(first), None);
-        let second = players.join(Uuid([1; 16]), "A".to_owned(), spawn(), &limits).unwrap();
+        let second = players
+            .join(Uuid([1; 16]), "A".to_owned(), spawn(), &limits)
+            .unwrap();
         assert_ne!(first, second);
     }
 
@@ -194,9 +207,13 @@ mod tests {
     fn move_player_routes_and_reports_errors() {
         let limits = MovementLimits::default();
         let mut players = PlayerManager::new();
-        let id = players.join(Uuid([1; 16]), "A".to_owned(), spawn(), &limits).unwrap();
+        let id = players
+            .join(Uuid([1; 16]), "A".to_owned(), spawn(), &limits)
+            .unwrap();
         let target = Vec3::new(2.0, 64.0, 2.0);
-        players.move_player(id, target, Rotation::default(), true, &limits).unwrap();
+        players
+            .move_player(id, target, Rotation::default(), true, &limits)
+            .unwrap();
         assert_eq!(players.get(id).unwrap().position(), target);
 
         let far = Vec3::new(9_000.0, 64.0, 0.0);
