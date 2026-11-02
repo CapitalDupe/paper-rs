@@ -250,6 +250,9 @@ mod tests {
         let checksum_at = trailing.len() - 4;
         trailing.insert(checksum_at, 0);
         let result = decode_chunk(&reseal(trailing), pos);
-        assert!(matches!(result, Err(StorageError::Corrupt("trailing data"))));
+        assert!(matches!(
+            result,
+            Err(StorageError::Corrupt("trailing data"))
+        ));
     }
 }
