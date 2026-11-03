@@ -1,4 +1,4 @@
-# paper-rs
+# Magna MC
 
 **A Rust-native, high-performance Minecraft Java server inspired by the goals and feature set of PaperMC.**
 
