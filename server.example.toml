@@ -9,3 +9,4 @@ motd = "A paper-rs server"
 online_mode = true            # keep true unless you know why you need otherwise
 compression_threshold = 256   # -1 disables compression
 view_distance = 10            # 2 to 32
+log_level = "info"             # error, warn, info, debug or trace
