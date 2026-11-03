@@ -12,7 +12,7 @@ Facts gathered on 2026-11-03 (third-party sources; re-check before relying on th
 - Mojang moved to year-based numbering. The recent releases are 26.1 (2026-03-24), 26.2 (2026-06-16) and 26.3 (2026-09-15); 26.1.1 and 26.1.2 were hotfixes ([release history](https://minecrafthub.io/articles/minecraft-version-history)).
 - 26.3 is the newest release found. A hosting guide says 26.4 is planned for Q4 2026 ([guide](https://hostvalues.net/en/blog/minecraft-26-3-server-guide)).
 - Paper lists 26.3 as its latest stable release, with Java 25 required. Every older version on Paper's download list shows as a final build, so older ecosystems are no longer moving ([Paper builds](https://mcjarhub.com/jar/paper)).
-- One source reports the 26.3 protocol version as 777 and says a 26.2 client cannot join a 26.3 server ([guide](https://hostvalues.net/en/blog/minecraft-26-3-server-guide)). No second source confirmed this number.
+- One source reports the 26.3 protocol version as 777 and says a 26.2 client cannot join a 26.3 server ([guide](https://hostvalues.net/en/blog/minecraft-26-3-server-guide)). A second, independent source later agreed; see the verification gate below.
 
 ## Options
 
@@ -41,8 +41,8 @@ Consequences:
 
 The protocol version number is not confirmed. Before any packet code depends on it (roadmap M1 handshake and status work):
 
-1. Confirm the number against a second, authoritative source for 26.3.
-2. Confirm it from a real 26.3 client by capturing its handshake packet, and keep the capture as a golden test fixture.
+1. ~~Confirm the number against a second source for 26.3.~~ Done 2026-11-03: the data tables of Pumpkin, a third-party Rust server, also give 777 for 26.3 (and 776 for 26.2). See `docs/PROTOCOL.md` for provenance; no code or data was copied.
+2. Confirm it from a real 26.3 client by capturing its handshake packet, and keep the capture as a golden test fixture. **Still open.**
 3. Record the verified number in `docs/COMPATIBILITY.md` and change this section to "Closed".
 
 If the number differs from 777, only this ADR's context and `COMPATIBILITY.md` change; the decision itself stands.
