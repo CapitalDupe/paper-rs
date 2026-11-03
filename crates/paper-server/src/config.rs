@@ -13,6 +13,9 @@ use std::path::Path;
 
 use serde::Deserialize;
 
+/// Accepted values for `log_level`.
+pub const LOG_LEVELS: [&str; 5] = ["error", "warn", "info", "debug", "trace"];
+
 /// Server settings.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(default, deny_unknown_fields)]
@@ -31,6 +34,8 @@ pub struct Config {
     pub compression_threshold: i32,
     /// Chunk radius sent to each player.
     pub view_distance: u8,
+    /// Log verbosity: error, warn, info, debug or trace.
+    pub log_level: String,
 }
 
 impl Default for Config {
@@ -43,6 +48,7 @@ impl Default for Config {
             online_mode: true,
             compression_threshold: 256,
             view_distance: 10,
+            log_level: "info".to_owned(),
         }
     }
 }
@@ -116,6 +122,9 @@ impl Config {
         if !(2..=32).contains(&self.view_distance) {
             problems.push("view_distance must be between 2 and 32");
         }
+        if !LOG_LEVELS.contains(&self.log_level.as_str()) {
+            problems.push("log_level must be error, warn, info, debug or trace");
+        }
         if problems.is_empty() {
             Ok(())
         } else {
@@ -165,6 +174,12 @@ mod tests {
             Err(ConfigError::Invalid(problems)) => assert_eq!(problems.len(), 2),
             other => panic!("unexpected result: {other:?}"),
         }
+    }
+
+    #[test]
+    fn rejects_unknown_log_level() {
+        let result = Config::from_toml_str("log_level = \"loud\"\n");
+        assert!(matches!(result, Err(ConfigError::Invalid(_))));
     }
 
     #[test]
