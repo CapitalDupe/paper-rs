@@ -25,7 +25,9 @@ pub fn build_options(config: &JvmConfig) -> Result<Vec<String>, JvmError> {
     let mut options = vec!["-Djava.awt.headless=true".to_owned()];
     if let Some(megabytes) = config.max_heap_mb {
         if megabytes == 0 {
-            return Err(JvmError::BadConfig("max_heap_mb must be positive".to_owned()));
+            return Err(JvmError::BadConfig(
+                "max_heap_mb must be positive".to_owned(),
+            ));
         }
         options.push(format!("-Xmx{megabytes}m"));
     }
@@ -218,7 +220,10 @@ mod tests {
             max_heap_mb: Some(0),
             ..JvmConfig::default()
         };
-        assert!(matches!(build_options(&config), Err(JvmError::BadConfig(_))));
+        assert!(matches!(
+            build_options(&config),
+            Err(JvmError::BadConfig(_))
+        ));
     }
 
     #[cfg(unix)]
@@ -228,7 +233,10 @@ mod tests {
             class_path: vec![PathBuf::from("a:b")],
             ..JvmConfig::default()
         };
-        assert!(matches!(build_options(&config), Err(JvmError::BadConfig(_))));
+        assert!(matches!(
+            build_options(&config),
+            Err(JvmError::BadConfig(_))
+        ));
     }
 
     #[test]
