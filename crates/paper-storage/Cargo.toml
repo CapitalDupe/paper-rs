@@ -1,0 +1,16 @@
+[package]
+name = "paper-storage"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Crash-safe chunk persistence for the Magna MC server prototype"
+
+[dependencies]
+paper-world = { path = "../paper-world" }
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints]
+workspace = true
