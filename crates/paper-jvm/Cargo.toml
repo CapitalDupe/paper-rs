@@ -1,0 +1,13 @@
+[package]
+name = "paper-jvm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Embeds a JVM so Bukkit/Paper plugins can run inside the Magna MC server"
+
+[dependencies]
+jni = { version = "0.21", features = ["invocation"] }
+
+[lints]
+workspace = true
