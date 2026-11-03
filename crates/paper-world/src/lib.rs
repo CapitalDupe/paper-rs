@@ -8,6 +8,9 @@
 
 pub mod block;
 pub mod chunk;
+pub mod entity;
+pub mod manager;
 pub mod packed;
 pub mod palette;
+pub mod player;
 pub mod pos;
