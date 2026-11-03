@@ -48,4 +48,4 @@ Significant decisions are recorded in `docs/adr/`:
 
 - [ADR 0001](adr/0001-license-and-mojang-code-boundary.md): GPL-3.0 license and the Mojang-code boundary.
 - [ADR 0002](adr/0002-jvm-bridge.md): JVM bridge for Paper plugin compatibility (proposed).
-- [ADR 0003](adr/0003-target-minecraft-version.md): target Minecraft version (draft).
+- [ADR 0003](adr/0003-target-minecraft-version.md): target Minecraft version: 26.3 (accepted; protocol number verification pending).
