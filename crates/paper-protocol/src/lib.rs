@@ -8,8 +8,10 @@
 
 pub mod codec;
 pub mod frame;
+pub mod handshake;
 pub mod packet;
+pub mod status;
 pub mod varint;
 
 /// Current implementation status of the protocol layer.
-pub const STATUS: &str = "framing and codec primitives";
+pub const STATUS: &str = "framing, codecs, handshake and status packets";
