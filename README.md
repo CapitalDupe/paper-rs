@@ -15,9 +15,6 @@ PaperMC demonstrates how much a server can improve through performance engineeri
 - Provide robust configuration, logging, metrics, and graceful shutdown.
 - Explore a documented extension API after core server behavior stabilizes.
 - Develop in small, testable milestones with reproducible benchmarks.
-
-## Non-goals (for now)
-
 - Claiming drop-in compatibility with Paper, Bukkit, or Spigot plugins before it is demonstrated by tests.
 - Copying Mojang's proprietary server code, decompiled or deobfuscated Minecraft sources, or Paper patches that modify them. Paper's own original code may be followed or reused under GPL-3.0 with provenance recorded (see ADR 0001).
 - Promising production readiness or a specific performance advantage before benchmarks exist.
