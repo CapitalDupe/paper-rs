@@ -6,7 +6,16 @@ license.workspace = true
 repository.workspace = true
 description = "Protocol primitives for the independent paper-rs server"
 
+[features]
+default = ["zlib", "encryption"]
+# zlib packet compression through flate2.
+zlib = ["dep:flate2"]
+# AES-128 for CFB8 stream encryption through the audited `aes` crate.
+encryption = ["dep:aes"]
+
 [dependencies]
+aes = { version = "0.8", optional = true }
+flate2 = { version = "1", optional = true }
 
 [lints]
 workspace = true

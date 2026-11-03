@@ -6,7 +6,9 @@ There is no playable server implementation yet, so no Minecraft client version o
 
 ## Initial target
 
-The first protocol milestone should select one specific Minecraft Java Edition release and document:
+The first target is **Minecraft Java Edition 26.3**, chosen in [ADR 0003](adr/0003-target-minecraft-version.md). Its protocol version is 777 according to two independent sources, but it has **not yet been confirmed against a real client**; treat it as unconfirmed until ADR 0003's verification gate is closed. Packet ids, layouts and their provenance are in [PROTOCOL.md](PROTOCOL.md). No other version is targeted.
+
+The first protocol milestone documents:
 - Protocol version and packet coverage.
 - Status, login, encryption, and compression behavior.
 - Authentication mode and required configuration.

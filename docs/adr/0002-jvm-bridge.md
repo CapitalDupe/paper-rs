@@ -27,5 +27,5 @@ Embed a JVM in the Rust server through the `jni` crate (new crate `paper-jvm`). 
 
 ## Open questions
 
-- Which JVM versions to support and how to ship or locate one.
+- Which JVM versions to support and how to ship or locate one. Java 25 is the minimum, because Paper for the ADR 0003 target (26.3) requires it; whether to bundle a runtime is still open.
 - Exact licensing terms of the API artifacts we implement or depend on (see ADR 0001).

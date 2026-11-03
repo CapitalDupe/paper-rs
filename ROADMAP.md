@@ -9,9 +9,10 @@ This roadmap is directional. Items are not complete unless reflected in code, te
 - [ ] Establish issue labels and design decision records.
 
 ## M1 — Protocol research and vertical slice
-- [ ] Choose and document the first target Minecraft Java version.
-- [ ] Document protocol references and compatibility policy.
-- [ ] Implement bounded packet framing and codec primitives.
+- [x] Choose and document the first target Minecraft Java version (26.3, ADR 0003).
+- [ ] Verify the 26.3 protocol version against a real client capture (ADR 0003 gate; two independent sources already agree on 777).
+- [x] Document protocol references and compatibility policy (`docs/PROTOCOL.md`, `docs/COMPATIBILITY.md`).
+- [x] Implement bounded packet framing and codec primitives (also handshake, status and login packets, compression framing and CFB8).
 - [ ] Add golden tests and fuzz/property tests for malformed packets.
 - [ ] Build a minimal status-ping response.
 
