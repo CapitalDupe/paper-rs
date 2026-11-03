@@ -29,6 +29,8 @@ jobs:
         run: cargo fmt --all -- --check
       - name: Check workspace
         run: cargo check --workspace
+      - name: Build Java test plugins
+        run: bash scripts/build-test-plugins.sh
       - name: Test workspace
         env:
           PAPER_REQUIRE_JVM: "1"

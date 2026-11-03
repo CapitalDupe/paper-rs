@@ -9,8 +9,10 @@
 //! building the server does not require a JDK. Only one JVM can exist per process
 //! and it cannot be restarted, so use [`Jvm::global`].
 
+pub mod classloader;
 pub mod error;
 pub mod jvm;
 
+pub use classloader::PluginClassLoader;
 pub use error::JvmError;
 pub use jvm::{Jvm, JvmConfig};
