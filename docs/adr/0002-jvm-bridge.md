@@ -27,5 +27,5 @@ Embed a JVM in the Rust server through the `jni` crate (new crate `paper-jvm`). 
 
 ## Open questions
 
-- Which JVM versions to support and how to ship or locate one.
+- Java 25 is the minimum (see ADR 0003). How the server ships or locates a JVM is still open.
 - Exact licensing terms of the API artifacts we implement or depend on (see ADR 0001).
