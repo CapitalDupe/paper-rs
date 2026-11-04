@@ -112,9 +112,9 @@ pub fn resolve(plugins: &[PluginMeta]) -> Resolution {
             }
         }
     }
-    for i in 0..plugins.len() {
-        if rejected[i].is_none() && !order_idx.contains(&i) {
-            rejected[i] = Some(RejectReason::Cycle);
+    for (i, slot) in rejected.iter_mut().enumerate() {
+        if slot.is_none() && !order_idx.contains(&i) {
+            *slot = Some(RejectReason::Cycle);
         }
     }
 
@@ -203,14 +203,8 @@ mod tests {
         assert_eq!(
             result.rejected,
             [
-                (
-                    "A".to_owned(),
-                    RejectReason::MissingDependency("Missing".to_owned())
-                ),
-                (
-                    "B".to_owned(),
-                    RejectReason::DependencyRejected("A".to_owned())
-                ),
+                ("A".to_owned(), RejectReason::MissingDependency("Missing".to_owned())),
+                ("B".to_owned(), RejectReason::DependencyRejected("A".to_owned())),
             ]
         );
     }
@@ -224,12 +218,7 @@ mod tests {
         assert_eq!(names(&result), ["Free"]);
         let rejected: Vec<&str> = result.rejected.iter().map(|(n, _)| n.as_str()).collect();
         assert_eq!(rejected, ["A", "B", "Tail"]);
-        assert!(
-            result
-                .rejected
-                .iter()
-                .all(|(_, r)| *r == RejectReason::Cycle)
-        );
+        assert!(result.rejected.iter().all(|(_, r)| *r == RejectReason::Cycle));
     }
 
     #[test]
