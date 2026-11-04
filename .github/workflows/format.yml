@@ -1,0 +1,31 @@
+name: Auto-format
+
+# Runs rustfmt on every pushed branch (except main) and commits the result, so
+# nobody needs a local toolchain to keep the code formatted.
+on:
+  push:
+    branches-ignore: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - name: Format
+        run: cargo fmt --all
+      - name: Commit formatting changes
+        run: |
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -am "Apply cargo fmt (automated)"
+            git push
+          fi
