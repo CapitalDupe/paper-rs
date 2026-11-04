@@ -65,8 +65,7 @@ fn read_entry<R: Read + Seek>(
 /// At most [`MAX_META_BYTES`] are read from the entry, whatever its header claims.
 pub fn read_meta_from_jar(jar: &Path) -> Result<PluginMeta, String> {
     let file = File::open(jar).map_err(|err| format!("cannot open: {err}"))?;
-    let mut archive =
-        ZipArchive::new(file).map_err(|err| format!("not a valid jar: {err}"))?;
+    let mut archive = ZipArchive::new(file).map_err(|err| format!("not a valid jar: {err}"))?;
     let Some(text) = read_entry(&mut archive, "plugin.yml")? else {
         if archive.by_name("paper-plugin.yml").is_ok() {
             return Err("paper-plugin.yml plugins are not supported yet".to_owned());
@@ -168,17 +167,32 @@ mod tests {
     #[test]
     fn reports_unusable_jars_without_stopping() {
         let dir = tempfile::tempdir().unwrap();
-        write_jar(&dir.path().join("good.jar"), &[("plugin.yml", &yml("Good"))]);
+        write_jar(
+            &dir.path().join("good.jar"),
+            &[("plugin.yml", &yml("Good"))],
+        );
         fs::write(dir.path().join("broken.jar"), "not a zip").unwrap();
         write_jar(&dir.path().join("empty.jar"), &[("readme.txt", "x")]);
-        write_jar(&dir.path().join("paper.jar"), &[("paper-plugin.yml", "name: P\n")]);
-        write_jar(&dir.path().join("badyml.jar"), &[("plugin.yml", "name: [\n")]);
+        write_jar(
+            &dir.path().join("paper.jar"),
+            &[("paper-plugin.yml", "name: P\n")],
+        );
+        write_jar(
+            &dir.path().join("badyml.jar"),
+            &[("plugin.yml", "name: [\n")],
+        );
         let found = discover(dir.path()).unwrap();
         assert_eq!(found.plugins.len(), 1);
         assert_eq!(found.problems.len(), 4);
         let reason = |file: &str| {
             let jar = dir.path().join(file);
-            found.problems.iter().find(|p| p.jar == jar).unwrap().reason.clone()
+            found
+                .problems
+                .iter()
+                .find(|p| p.jar == jar)
+                .unwrap()
+                .reason
+                .clone()
         };
         assert!(reason("broken.jar").contains("not a valid jar"));
         assert!(reason("empty.jar").contains("missing plugin.yml"));

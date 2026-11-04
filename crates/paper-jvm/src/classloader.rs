@@ -60,11 +60,7 @@ impl PluginClassLoader {
     }
 }
 
-fn load(
-    env: &mut JNIEnv<'_>,
-    jar: &Path,
-    main_class: &str,
-) -> Result<PluginClassLoader, JvmError> {
+fn load(env: &mut JNIEnv<'_>, jar: &Path, main_class: &str) -> Result<PluginClassLoader, JvmError> {
     let Some(path) = jar.to_str() else {
         return Err(JvmError::BadConfig(
             "the plugin jar path must be valid UTF-8".to_owned(),
@@ -72,7 +68,11 @@ fn load(
     };
     let path = env.new_string(path);
     let path = check(env, path)?;
-    let file = env.new_object("java/io/File", "(Ljava/lang/String;)V", &[JValue::Object(&path)]);
+    let file = env.new_object(
+        "java/io/File",
+        "(Ljava/lang/String;)V",
+        &[JValue::Object(&path)],
+    );
     let file = check(env, file)?;
     let uri = env.call_method(&file, "toURI", "()Ljava/net/URI;", &[]);
     let uri = check(env, uri)?;
@@ -238,7 +238,8 @@ mod tests {
         let second = jvm.load_plugin_class(&jar, "example.Hello").unwrap();
         let same = jvm
             .with_env(|env| {
-                let result = env.is_same_object(first.main_class().as_obj(), second.main_class().as_obj());
+                let result =
+                    env.is_same_object(first.main_class().as_obj(), second.main_class().as_obj());
                 check(env, result)
             })
             .unwrap();

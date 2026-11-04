@@ -147,8 +147,7 @@ fn required(doc: &Yaml, key: &'static str) -> Result<String, MetaError> {
     if matches!(value, Yaml::BadValue | Yaml::Null) {
         return Err(MetaError::Missing(key));
     }
-    scalar_string(value)
-        .ok_or_else(|| MetaError::Invalid(key, "must be a plain value".to_owned()))
+    scalar_string(value).ok_or_else(|| MetaError::Invalid(key, "must be a plain value".to_owned()))
 }
 
 fn optional(doc: &Yaml, key: &'static str) -> Result<Option<String>, MetaError> {
@@ -186,8 +185,7 @@ pub fn parse_plugin_yml(text: &str) -> Result<PluginMeta, MetaError> {
         return Err(MetaError::TooLarge);
     }
     guard(text)?;
-    let docs =
-        YamlLoader::load_from_str(text).map_err(|err| MetaError::Yaml(err.to_string()))?;
+    let docs = YamlLoader::load_from_str(text).map_err(|err| MetaError::Yaml(err.to_string()))?;
     let Some(doc) = docs.first() else {
         return Err(MetaError::NotAMapping);
     };
@@ -204,7 +202,10 @@ pub fn parse_plugin_yml(text: &str) -> Result<PluginMeta, MetaError> {
     }
     let main = required(doc, "main")?;
     if !is_valid_class_name(&main) {
-        return Err(MetaError::Invalid("main", "not a valid class name".to_owned()));
+        return Err(MetaError::Invalid(
+            "main",
+            "not a valid class name".to_owned(),
+        ));
     }
     if main.starts_with("org.bukkit.") {
         return Err(MetaError::Invalid(
@@ -301,9 +302,15 @@ permissions:
     #[test]
     fn requires_name_main_and_version() {
         let missing = |text| parse_plugin_yml(text).unwrap_err();
-        assert_eq!(missing("main: a.B\nversion: 1\n"), MetaError::Missing("name"));
+        assert_eq!(
+            missing("main: a.B\nversion: 1\n"),
+            MetaError::Missing("name")
+        );
         assert_eq!(missing("name: A\nversion: 1\n"), MetaError::Missing("main"));
-        assert_eq!(missing("name: A\nmain: a.B\n"), MetaError::Missing("version"));
+        assert_eq!(
+            missing("name: A\nmain: a.B\n"),
+            MetaError::Missing("version")
+        );
     }
 
     #[test]
@@ -315,7 +322,9 @@ permissions:
         assert!(invalid("name: A\nmain: 1a.B\nversion: 1\n"));
         assert!(invalid("name: A\nmain: org.bukkit.Thing\nversion: 1\n"));
         assert!(invalid("name: A\nmain: a.B\nversion: 1\nload: SOMETIME\n"));
-        assert!(invalid("name: A\nmain: a.B\nversion: 1\ndepend: [\"bad name\"]\n"));
+        assert!(invalid(
+            "name: A\nmain: a.B\nversion: 1\ndepend: [\"bad name\"]\n"
+        ));
     }
 
     #[test]
@@ -328,7 +337,10 @@ permissions:
     fn rejects_non_mappings_and_bad_yaml() {
         assert_eq!(parse_plugin_yml("- a\n- b\n"), Err(MetaError::NotAMapping));
         assert_eq!(parse_plugin_yml(""), Err(MetaError::NotAMapping));
-        assert!(matches!(parse_plugin_yml("a: [1, 2\n"), Err(MetaError::Yaml(_))));
+        assert!(matches!(
+            parse_plugin_yml("a: [1, 2\n"),
+            Err(MetaError::Yaml(_))
+        ));
     }
 
     #[test]
@@ -339,7 +351,10 @@ permissions:
 
     #[test]
     fn rejects_oversized_files() {
-        let text = format!("name: A\nmain: a.B\nversion: 1\nx: {}\n", "a".repeat(MAX_META_BYTES));
+        let text = format!(
+            "name: A\nmain: a.B\nversion: 1\nx: {}\n",
+            "a".repeat(MAX_META_BYTES)
+        );
         assert_eq!(parse_plugin_yml(&text), Err(MetaError::TooLarge));
     }
 
