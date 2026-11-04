@@ -203,8 +203,14 @@ mod tests {
         assert_eq!(
             result.rejected,
             [
-                ("A".to_owned(), RejectReason::MissingDependency("Missing".to_owned())),
-                ("B".to_owned(), RejectReason::DependencyRejected("A".to_owned())),
+                (
+                    "A".to_owned(),
+                    RejectReason::MissingDependency("Missing".to_owned())
+                ),
+                (
+                    "B".to_owned(),
+                    RejectReason::DependencyRejected("A".to_owned())
+                ),
             ]
         );
     }
@@ -218,7 +224,12 @@ mod tests {
         assert_eq!(names(&result), ["Free"]);
         let rejected: Vec<&str> = result.rejected.iter().map(|(n, _)| n.as_str()).collect();
         assert_eq!(rejected, ["A", "B", "Tail"]);
-        assert!(result.rejected.iter().all(|(_, r)| *r == RejectReason::Cycle));
+        assert!(
+            result
+                .rejected
+                .iter()
+                .all(|(_, r)| *r == RejectReason::Cycle)
+        );
     }
 
     #[test]
