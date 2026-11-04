@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -23,12 +24,14 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: "25"
       - uses: Swatinem/rust-cache@v2
-      - name: Check formatting
-        run: cargo fmt --all -- --check
+      - name: Check formatting (advisory)
+        run: cargo fmt --all -- --check || echo "::warning::Not rustfmt-formatted; the Auto-format workflow fixes this on branches."
       - name: Check workspace
         run: cargo check --workspace
+      - name: Build Java test plugins
+        run: bash scripts/build-test-plugins.sh
       - name: Test workspace
         env:
           PAPER_REQUIRE_JVM: "1"

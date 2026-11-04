@@ -1,0 +1,17 @@
+[package]
+name = "paper-plugin"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Plugin discovery, metadata parsing, and dependency ordering for Magna MC"
+
+[dependencies]
+yaml-rust2 = "0.10"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints]
+workspace = true

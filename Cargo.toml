@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "crates/paper-jvm",
+    "crates/paper-plugin",
     "crates/paper-protocol",
     "crates/paper-server",
     "crates/paper-storage",
