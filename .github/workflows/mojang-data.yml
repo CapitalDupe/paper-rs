@@ -1,0 +1,80 @@
+name: Mojang data probe
+
+# Manual only. Downloads the official server jar from Mojang, runs Mojang's own
+# data reports, and prints a summary of the protocol data. Nothing from the jar or
+# the reports is stored, uploaded, or committed.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Minecraft version id (for example 26.3)
+        required: true
+        default: "26.3"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Download the official server jar
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          curl -fsSL https://piston-meta.mojang.com/mc/game/version_manifest_v2.json -o manifest.json
+          python3 - "$VERSION" <<'PY'
+          import json, sys, urllib.request
+          version = sys.argv[1]
+          manifest = json.load(open("manifest.json"))
+          print("latest release:", manifest["latest"]["release"], "| latest snapshot:", manifest["latest"]["snapshot"])
+          entry = next((v for v in manifest["versions"] if v["id"] == version), None)
+          if entry is None:
+              sys.exit("version " + version + " not found in the manifest")
+          meta = json.load(urllib.request.urlopen(entry["url"]))
+          server = meta["downloads"]["server"]
+          open("server.url", "w").write(server["url"])
+          open("server.sha1", "w").write(server["sha1"])
+          PY
+          curl -fsSL "$(cat server.url)" -o server.jar
+          echo "$(cat server.sha1)  server.jar" | sha1sum -c -
+      - name: Run Mojang's data reports
+        run: |
+          java -version
+          java -DbundlerMainClass=net.minecraft.data.Main -jar server.jar --reports --output generated > datagen.log 2>&1 || { tail -n 60 datagen.log; exit 1; }
+          ls generated/reports
+      - name: Summarize
+        run: |
+          python3 - <<'PY'
+          import io, json, os, zipfile
+          jar = zipfile.ZipFile("server.jar")
+          found = False
+          for name in jar.namelist():
+              if name.endswith("version.json"):
+                  print("version.json in jar:", name)
+                  print(json.dumps(json.load(jar.open(name)), indent=1))
+                  found = True
+          if not found:
+              for name in jar.namelist():
+                  if name.startswith("META-INF/versions/") and name.endswith(".jar"):
+                      inner = zipfile.ZipFile(io.BytesIO(jar.read(name)))
+                      for inner_name in inner.namelist():
+                          if inner_name.endswith("version.json"):
+                              print("version.json in", name)
+                              print(json.dumps(json.load(inner.open(inner_name)), indent=1))
+          packets = json.load(open("generated/reports/packets.json"))
+          for state, directions in packets.items():
+              for direction, table in directions.items():
+                  print(state + "/" + direction + ":", len(table), "packets")
+                  if state in ("handshake", "status", "login", "configuration"):
+                      for pname, info in sorted(table.items(), key=lambda kv: kv[1]["protocol_id"]):
+                          print("   ", info["protocol_id"], pname)
+          blocks = json.load(open("generated/reports/blocks.json"))
+          print("blocks:", len(blocks), "block states:", sum(len(b["states"]) for b in blocks.values()))
+          print("reports:", sorted(os.listdir("generated/reports")))
+          PY
